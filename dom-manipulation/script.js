@@ -19,11 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('quotes', JSON.stringify(quotes));
     }
 
-    function showRandomQuote() {
+    function displayRandomQuote() {
         const randomIndex = Math.floor(Math.random() * quotes.length);
         const randomQuote = quotes[randomIndex];
         const quoteDisplay = document.getElementById('quoteDisplay');
-        quoteDisplay.textContent = `"${randomQuote.text}" - ${randomQuote.category}`;
+        quoteDisplay.innerHTML = `"${randomQuote.text}" - ${randomQuote.category}`;
         sessionStorage.setItem('lastViewedQuote', JSON.stringify(randomQuote));
     }
 
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    document.getElementById('newQuote').addEventListener('click', showRandomQuote);
+    document.getElementById('newQuote').addEventListener('click', displayRandomQuote);
     document.getElementById('exportButton').addEventListener('click', exportQuotesToJson);
             document.getElementById('importFile').addEventListener('change', importQuotesFromJson);
 
