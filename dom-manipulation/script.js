@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let quotes = [];
     let categories = new Set();
+    const API_URL = 'https://jsonplaceholder.typicode.com/posts'; // Simulated server endpoint
 
     function loadQuotes() {
         const storedQuotes = localStorage.getItem('quotes');
@@ -110,6 +111,39 @@ document.addEventListener('DOMContentLoaded', () => {
         showRandomQuote();
     };
 
+    async function fetchQuotesFromServer() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const serverQuotes = await response.json();
+            updateQuotes(serverQuotes);
+        } catch (error) {
+            console.error('Failed to fetch quotes from server:', error);
+        }
+    }
+
+    function updateQuotes(serverQuotes) {
+        let hasConflict = false;
+        serverQuotes.forEach(serverQuote => {
+            const existingQuote = quotes.find(quote => quote.text === serverQuote.text);
+            if (!existingQuote) {
+                quotes.push(serverQuote);
+            } else if (existingQuote.category !== serverQuote.category) {
+                hasConflict = true;
+                existingQuote.category = serverQuote.category; // Simple conflict resolution strategy
+            }
+        });
+        if (hasConflict) {
+            alert('Conflicts were detected and resolved. Server data has been prioritized.');
+        }
+        saveQuotes();
+        populateCategories();
+    }
+
+    function startDataSync() {
+        setInterval(fetchQuotesFromServer, 10000); // Fetch quotes from server every 10 seconds
+    }
+
     document.getElementById('newQuote').addEventListener('click', showRandomQuote);
     document.getElementById('exportButton').addEventListener('click', exportQuotesToJson);
     document.getElementById('importFile').addEventListener('change', importFromJsonFile);
@@ -118,4 +152,5 @@ document.addEventListener('DOMContentLoaded', () => {
     loadLastViewedQuote();
     createAddQuoteForm();
     showRandomQuote();
+    startDataSync(); // Start periodic data syncing
 });
