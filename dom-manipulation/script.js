@@ -158,8 +158,12 @@ document.addEventListener('DOMContentLoaded', () => {
         populateCategories();
     }
 
+    async function syncQuotes() {
+        await fetchQuotesFromServer(); // Fetch quotes from the server
+    }
+
     function startDataSync() {
-        setInterval(fetchQuotesFromServer, 10000); // Fetch quotes from server every 10 seconds
+        setInterval(syncQuotes, 10000); // Sync quotes with server every 10 seconds
     }
 
     document.getElementById('newQuote').addEventListener('click', showRandomQuote);
