@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function syncQuotes() {
         await fetchQuotesFromServer(); // Fetch quotes from the server
+        alert('Quotes synced with server!'); // Alert user when sync is successful
     }
 
     function startDataSync() {
