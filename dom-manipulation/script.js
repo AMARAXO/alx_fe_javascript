@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createAddQuoteForm() {
         const form = document.getElementById('add-quote-form');
-        form.addEventListener('submit', (event) => {
+        form.addEventListener('submit', async (event) => {
             event.preventDefault();
             const quoteText = document.getElementById('quote-text').value;
             const quoteCategory = document.getElementById('quote-category').value;
@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saveQuotes();
             populateCategories();
             form.reset();
+            await postQuoteToServer(newQuote); // Post new quote to server
         });
     }
 
@@ -119,6 +120,23 @@ document.addEventListener('DOMContentLoaded', () => {
             updateQuotes(serverQuotes);
         } catch (error) {
             console.error('Failed to fetch quotes from server:', error);
+        }
+    }
+
+    async function postQuoteToServer(quote) {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify(quote),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) throw new Error('Network response was not ok');
+            const result = await response.json();
+            console.log('Posted quote to server:', result);
+        } catch (error) {
+            console.error('Failed to post quote to server:', error);
         }
     }
 
